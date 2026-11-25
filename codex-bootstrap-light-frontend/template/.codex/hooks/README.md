@@ -6,7 +6,7 @@ Two hooks, both registered in `.codex/hooks.json`: `guard.mjs` below, and `upkee
 
 **The command line** is `node "$(git rev-parse --show-toplevel)/.codex/hooks/guard.mjs" --harness codex`: no variable carries the project root and a hook starts in the session's directory, which may be a subfolder. That line works in PowerShell 7, Windows PowerShell, `bash` and `sh`. The guard then takes the project root from its own location, never from the working directory. Outside a git repository the line fails with empty output, which allows the call.
 
-**Trust.** Codex loads a project's `.codex/` only for a trusted project, and runs only the hooks the developer has reviewed: `/hooks` in the CLI, "Review hooks" in the app. **A new or changed hook is skipped until it is reviewed again** - after an update of this layer, or any edit to `hooks.json` or a hook script, open the review; until then nothing here guards anything.
+**Trust.** Codex loads a project's `.codex/` only for a trusted project, and runs only the hooks the developer has reviewed: `/hooks` in the CLI, "Review hooks" in the app. **A new or changed hook is skipped until it is reviewed again, and Codex says nothing about it** - after an install or an update of this layer, or any edit to `hooks.json` or a hook script, open the review; until then nothing here guards anything, and only `.codex/rules/git.rules` still refuses a plain `git commit`. The check: have Codex run `cd .` - a refusal beginning "Blocked by .codex/hooks/guard.mjs" means the guard is live; a command that simply runs means the hooks are off.
 
 ## What it refuses
 

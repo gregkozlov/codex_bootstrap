@@ -225,7 +225,25 @@ So JSON `deny` blocks an `apply_patch` call, blocks inside a sub-agent, and bloc
 - **Session start**: the upkeep reminder reached the model, which opened its first reply with the line. `debug`, `handoff` and `maintain-ai-layer` were in the skill list, `retro` was not; each skill file and the `init` reference were read from `.agents/skills/` by path.
 - `request_user_input` is listed as plan-mode only; a second tool, `request_user_input_async`, is listed in the default mode. The layer does not use it: it was not tried.
 
-**Still unmeasured:** a multi-token `forbidden` rule answering by itself (the hook always answered first); `$skill-name` typed as a real user message, with trailing words; `PreCompact` / `PostCompact` and whether a compaction fires `SessionStart` with `source: compact`; behaviour with approvals on (a prompt instead of a failure); how the desktop app asks to trust a hook and shows a refusal; whether a child of a fenced agent inherits its type; anything on macOS or Linux.
+**One pass in the desktop app (2026-11-25), in the same scratch install, hooks not yet reviewed:**
+
+- The app asked to trust the folder. **It did not offer to review the hooks, and it ran none of them**: the logging hook, registered on every event, wrote no line for the whole session. Nothing on screen said so.
+- With no hook running, the first patch to a ruled file passed, `pwsh -NoLogo` opened a prompt and a subshell `cd` ran - none of that is the guard failing, it never ran.
+- **`git commit -m "x"` was still refused, by the command rules alone**, and the rule's `justification` reached the model: `rejected: AGENTS.md, Version Control: apply file changes only ...`. So a multi-token `forbidden` rule works by itself, and it is the only line standing before the hook review.
+- In the app's "Ask for approval" mode, patches creating a file under `.agents/skills/` and under `.codex/` (paths the guard does not protect) brought an approval prompt and were written once approved - a prompt there, where the headless run with approvals off got a failure.
+
+This is why `INSTALL.md`, `README.md` and the hooks README tell the developer to open the hook review themselves and give them a one-command check that the guard is live.
+
+**The same pass again after the review, in a new thread** - the guard of this layer's commit, approvals on (`permission_mode: default`):
+
+- **Where the review is**: Settings > Hooks lists the project with its hooks marked "need review"; inside, "Trust all", or "Trust" and a switch on each hook, each shown under its `statusMessage`. Once trusted, every hook ran in the next thread.
+- **Refused live by the guard, the reason shown on screen to the person as well as to the model**: `cd .` (the liveness check), `git commit -m "x"` (the hook answers before the command rules once it runs), the first patch to a ruled file (the retry passed after the rule was read), `pwsh -NoLogo` ("opens an interactive session"), and `(cd src && git status --short)`. The last two are the second guard round's refusals, seen live.
+- A patch creating a file under `.agents/skills/` fired a `PermissionRequest` event - the approval prompt - and was written once approved.
+- **`$maintain-ai-layer init` typed as a message** reached the session as that text, was shown as a skill chip, and selected `init`: the model read `references/init.md` and `.ai-layer/settled.md` before it was stopped. The trailing word works.
+- The session-start reminder reached the model in the app too.
+- Before a later patch to the ruled file the model ran `--rules-for` by itself, as `AGENTS.md` asks.
+
+**Still unmeasured:** `PreCompact` / `PostCompact` and whether a compaction fires `SessionStart` with `source: compact` (no compaction was run); a patch through a nested shell and a spawn by a fenced agent against the new guard in a live run (both proved through the hook line); whether a child of a fenced agent inherits its type; anything on macOS or Linux.
 
 ## What the review and the live run changed in the guard
 
