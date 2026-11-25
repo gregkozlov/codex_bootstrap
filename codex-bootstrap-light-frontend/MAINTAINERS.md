@@ -1,6 +1,6 @@
 # Maintaining the light frontend layer for Codex
 
-For whoever changes this bootstrap, and the hand-off to whoever ports the next layer. An adopter needs only `README.md`; the model installing it reads `INSTALL.md`.
+For whoever changes this bootstrap; the backend layer's `MAINTAINERS.md` builds on what this one measured. An adopter needs only `README.md`; the model installing it reads `INSTALL.md`.
 
 ## What it is built from
 
@@ -22,7 +22,7 @@ Paths on the right are under `template/`. `cmp` proves each line; run it before 
 | `hooks/tests/guard-shell-test.mjs` | `.codex/hooks/tests/guard-shell-test.mjs` |
 | `skills/maintain-ai-layer/references/settled.md` | `.ai-layer/settled.md` |
 
-**Identical across the Codex layers** - this is the first one, so the list is what the next layers are expected to share byte for byte, to be confirmed by `cmp` when each is built: the four files above (the full layer's `guard.mjs` differs from the light ones in comment lines only, as in the Claude repository), `.codex/hooks/upkeep-nudge.mjs`, `.codex/hooks/tests/upkeep-nudge-test.mjs`, `.agents/skills/maintain-ai-layer/layer-refs.mjs`, `.agents/skills/handoff/SKILL.md`, `.agents/skills/retro/SKILL.md` with its `agents/openai.yaml`, `.codex/rules/git.rules`.
+**Identical across the Codex layers** - this repository carries two, this one and `codex-bootstrap-light-backend`, and `cmp` confirms each line against the other: the four files above, `.codex/hooks/upkeep-nudge.mjs`, `.codex/hooks/tests/upkeep-nudge-test.mjs`, `.agents/skills/maintain-ai-layer/layer-refs.mjs`, `.agents/skills/handoff/SKILL.md`, `.agents/skills/retro/SKILL.md` with its `agents/openai.yaml`, `.codex/rules/git.rules`.
 
 **Forked** from the Claude layer (small scripts, under 10 KB each; a change to the Claude original is ported by hand, not copied):
 
@@ -47,7 +47,7 @@ Everything else is a rewrite and has no byte contract.
 | `rules/.gitkeep`, `.claude/rules/*.md` | `.ai-layer/rules/` | move; the format and the `paths:` globs are unchanged, the loader is the guard. |
 | skills `debug`, `handoff`, `retro`, `maintain-ai-layer` | `.agents/skills/<name>/` | rewrite. `retro` is explicit-only through `agents/openai.yaml` (`policy.allow_implicit_invocation: false`). The hand-off file is `.ai-layer/handoff.md`; an upkeep run's record goes to the OS temp directory. |
 | `references/settled.md` | `.ai-layer/settled.md` | move: a run appends to it. |
-| `references/init.md` | `references/init.md` | rewrite, for this layer alone. In the Claude repository one `init.md` serves the full and the light frontend layers; whether the Codex full layer shares this file is that session's call. |
+| `references/init.md` | `references/init.md` | rewrite, for this layer alone. In the Claude repository one `init.md` serves that repository's two frontend layers; the Codex repository has one frontend layer, so the file names only this layer's units. The backend layer has its own. |
 | `INSTALL.md`, `README.md`, `MAINTAINERS.md` | same names | rewrite. |
 
 Rows with no single file:
@@ -77,7 +77,7 @@ Rows with no single file:
 | A project that is not a git repository | refused: the hooks find the project through git |
 | Model pins (`sonnet`) on agents and on upkeep spawns | the owner's decision: an agent inherits the session's model, since slugs change every few months |
 
-What the Claude light layer already dropped against the full one (the review ladder, the Stop hook, session folders, the browser check) is in that layer's own `MAINTAINERS.md` and holds here unchanged.
+What the Claude light layer already dropped against the Claude repository's larger frontend layer (the review ladder, the Stop hook, session folders, the browser check) is in that layer's own `MAINTAINERS.md` and holds here unchanged. That larger layer has no Codex port (the owner's decision, 2026-11-25): this repository carries the two light layers only.
 
 ## Decisions on record
 
@@ -106,14 +106,14 @@ Taken on the owner's behalf while porting, each open to an overrule:
 
 - `.codex/config.toml` is a protected layer path, because it can switch hooks off. Cost: a session cannot edit the project's Codex configuration.
 - A patch that writes under `.git` is refused (under Claude Code an Edit there passes, as a known gap).
-- An editor agent (`comments`, in the larger layer) is fenced from the shell too.
+- An editor agent (`comments`, a name kept in the shared guard for the Claude repository's larger layer) is fenced from the shell too.
 - The guard's rule notes live in the OS temp directory, not in `.ai-layer/`.
 - The suites keep the other tool's cases and gained a Codex block each.
 - Rule globs are read as Claude Code's rule loader reads them, not as gitignore does, so one rule file reaches the same files under both tools.
 - The stash rule lists subcommands; a bare `git stash` is the guard's alone.
 - `guard` is registered on `SessionStart` for `startup`, `clear` and `compact`, not for `resume`: a resumed session still has its context, so its rule notes stay.
 - `layer-refs` checks `$name` as a skill only in the layer's own skills and hooks docs: in a project's docs it is a variable or a framework's own name.
-- The budget of `AGENTS.md` stays at 20 KB as planned, though the layer's own text grew to about 16 KB with the two new sections and the three rules the live runs added - about 4 KB is left to the project, against about 8 KB in the Claude layer. If that proves tight, the larger layer's 24 KiB is the next step, still inside Codex's 32 KiB chain limit.
+- The budget of `AGENTS.md` stays at 20 KB as planned, though the layer's own text grew to about 16 KB with the two new sections and the three rules the live runs added - about 4 KB is left to the project, against about 8 KB in the Claude layer. If that proves tight, 24 KiB - the backend layer's budget (the owner's answer, 2026-11-25) - is the next step, still inside Codex's 32 KiB chain limit.
 - `init.md` was written for this layer alone rather than kept generic for a larger one.
 - A skill file under `.agents/skills/` is patched by upkeep when the sandbox lets the write through, and handed to the developer as an exact pair when it does not.
 
@@ -122,7 +122,7 @@ Taken on the owner's behalf while porting, each open to an overrule:
 - The flag is `--harness codex` or `--harness=codex`, in any letter case. Any other value silently runs the other tool's form, where a refusal is exit code 2 - which does not block under Codex on Windows.
 - The functions that read Codex input, all behind the `CODEX` constant: `codexCall` (the entry: `SessionStart` goes to `forgetRules`, any other event that is not `PreToolUse` does nothing), `codexShell` and `commandLine` (the grammar and the argument-list form of a shell call), `patchOps` and `checkPatch` (a patch, file by file), `guardedPath` with `CODEX_LAYER` (the layer's own files), `CODEX_FENCED_AGENTS` with `READ_ONLY_FENCE` / `UPDATE_ONLY_FENCE` (the fence by `agent_type`), `loadRules`, `globRegex`, `rulesFor`, `ruleGate`, `forgetRules` (path rules), `deny` and `codexWording` (the JSON refusal and the wording), `projectRoot` (the root from `HOOK_ROOT`, or `CLAUDE_PROJECT_DIR` when the suites set it - never from `cwd`).
 - `codexWording` rewrites five phrases of a refusal written for the other tool: the guard's path, `CLAUDE.md` to `AGENTS.md`, "with Edit or Write" to "with apply_patch", "the session scratchpad or /tmp" to "the temp directory", "under the scratchpad" to "under the temp directory". A new refusal keeps to those phrases; the Codex block of each suite fails on one that does not.
-- **The command form in `hooks.json`** is `node "$(git rev-parse --show-toplevel)/.codex/hooks/guard.mjs" --harness codex`. Codex starts a hook as `pwsh.exe -NoProfile -Command "<command>"` on Windows; `${...}` variables of other tools do not expand, no environment variable carries the project root, and the hook's working directory is the session's. This line was run with a payload on stdin in PowerShell 7, Windows PowerShell and `bash`, from a subfolder: every guard class answered as expected in all three (the proof list below).
+- **The command form in `hooks.json`** is `node "$(git rev-parse --show-cdup).codex/hooks/guard.mjs" --harness codex`. Until the backend layer's session (2026-11-25) it was `"$(git rev-parse --show-toplevel)/..."`, the form the live run below used; that one failed under a project folder with non-ASCII letters, since PowerShell decodes git's output with the console code page - the hook did not start, which allows every call. The relative form answered in PowerShell 7, Windows PowerShell and `bash`, from the root and a subfolder of such a folder. Codex starts a hook as `pwsh.exe -NoProfile -Command "<command>"` on Windows; `${...}` variables of other tools do not expand, no environment variable carries the project root, and the hook's working directory is the session's. This line was run with a payload on stdin in PowerShell 7, Windows PowerShell and `bash`, from a subfolder: every guard class answered as expected in all three (the proof list below).
 - `--rules-for` and its files come last on the command line; it sets the switch by itself, so it answers with or without `--harness codex`.
 - **`hooks.json` registers the guard on four tool names**: `Bash`, `apply_patch`, and the two the hook sees for starting or tasking an agent, `collaborationspawn_agent` and `collaborationfollowup_task` (the guard tests the name's ending). A later engine that renames them leaves spawns unchecked, not blocked.
 - Under the switch a `cd` is refused at any depth with its own sentence, written in `checkChdir` rather than through `codexWording`, because the other tool's sentence ("moves the working directory for every later call") is false here.

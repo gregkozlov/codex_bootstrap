@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/guard.mjs\" --harness codex",
+            "command": "node \"$(git rev-parse --show-cdup).codex/hooks/guard.mjs\" --harness codex",
             "timeout": 10,
             "statusMessage": "Checking the call against the repo's prohibitions"
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/guard.mjs\" --harness codex",
+            "command": "node \"$(git rev-parse --show-cdup).codex/hooks/guard.mjs\" --harness codex",
             "timeout": 10,
             "statusMessage": "Forgetting the path rules a lost context was shown"
           }
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/upkeep-nudge.mjs\"",
+            "command": "node \"$(git rev-parse --show-cdup).codex/hooks/upkeep-nudge.mjs\"",
             "timeout": 10,
             "statusMessage": "Checking when the AI-layer upkeep last ran"
           }

@@ -9,8 +9,9 @@ The layers are ports of the Claude Code layers in [claude_bootstrap](https://git
 | Layer | For | What it is |
 | --- | --- | --- |
 | [codex-bootstrap-light-frontend](codex-bootstrap-light-frontend/README.md) | a codebase with a UI | six-step lifecycle, one reviewer (`hunt`), a doc checker (`drift`), a guard hook, path-scoped rules, monthly upkeep |
+| [codex-bootstrap-light-backend](codex-bootstrap-light-backend/README.md) | a server codebase, any language | the same, retargeted at a server: a second guard hook for secrets, frozen migrations, deploys and database sessions, a server's attack angles, local-only rules |
 
-More layers follow: a light one for a server codebase, and a full frontend one with a graded review ladder.
+One layer per repository: a repository with both a server and a UI takes the layer that matches where the risk is.
 
 ## Install
 
@@ -20,7 +21,7 @@ More layers follow: a light one for a server codebase, and a full frontend one w
 1. Download this repository (Code > Download ZIP, or `git clone`) and unpack it **outside** your project. You need one layer folder of it.
 2. Start Codex at your project's repository root, at high reasoning effort and with full access for this one session - the install writes into `.codex/`, `.agents/` and `.git/info/exclude`, which the default sandbox keeps read-only.
 3. Paste the prompt from the layer's README, with the path to the folder filled in. The install asks where the layer lives in git (yours alone, or committed for the team) and only what the repository cannot answer.
-4. Start a new session, trust the project and review the hooks (`/hooks` in the CLI, "Review hooks" in the app) - Codex skips a hook nobody reviewed.
+4. Start a new session, trust the project and review the hooks (`/hooks` in the CLI, Settings > Hooks in the app) - Codex skips a hook nobody reviewed.
 5. Run `$maintain-ai-layer init`: it writes the project-specific parts from your code.
 
 > [!NOTE]

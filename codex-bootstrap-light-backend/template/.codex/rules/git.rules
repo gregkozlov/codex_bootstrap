@@ -1,0 +1,39 @@
+# The never-commit policy as command rules: the git verbs AGENTS.md "Version Control" bans, each forbidden.
+# A second line only. A rule matches the command's leading words, so `git -C <dir> commit`, a quoted path to the
+# binary, a command using a redirect or a substitution, and git inside an interpreter one-liner all walk past it:
+# .codex/hooks/guard.mjs refuses those forms, and every verb listed here, by itself.
+# Only `forbidden` rules belong in this file. An `allow` rule would run its command outside the sandbox unasked.
+# Check an edit: codex execpolicy check --pretty --rules .codex/rules/git.rules -- git commit -m x
+
+prefix_rule(
+    pattern=["git", ["commit", "add", "stage", "rm", "mv", "push", "pull", "reset", "rebase", "merge", "tag", "cherry-pick", "revert", "am", "checkout", "switch", "restore", "clean", "update-ref"]],
+    decision="forbidden",
+    justification="AGENTS.md, Version Control: apply file changes only and leave them in the working tree - the author commits, stages, publishes and discards.",
+    match=["git commit -m x", "git add -A", "git push origin main", "git checkout -- a.ts", "git restore a.ts"],
+    not_match=["git status --short", "git diff --stat", "git log --oneline -1", "git show HEAD:a.ts", "git ls-files"],
+)
+
+# A bare `git stash` cannot be told from `git stash list` by its leading words: the guard refuses it.
+prefix_rule(
+    pattern=["git", "stash", ["push", "save", "pop", "apply", "drop", "clear", "branch", "create", "store", "import", "export"]],
+    decision="forbidden",
+    justification="AGENTS.md, Version Control: a stash hides or discards working-tree changes - the author's call. `git stash list` and `git stash show` are fine.",
+    match=["git stash push -m x", "git stash pop", "git stash drop"],
+    not_match=["git stash list", "git stash show -p"],
+)
+
+prefix_rule(
+    pattern=["git", "worktree", ["add", "remove"]],
+    decision="forbidden",
+    justification="AGENTS.md, Version Control: a worktree is added or removed by the author.",
+    match=["git worktree add ../tree", "git worktree remove ../tree"],
+    not_match=["git worktree list"],
+)
+
+prefix_rule(
+    pattern=["git", "branch", "-D"],
+    decision="forbidden",
+    justification="AGENTS.md, Version Control: deleting a branch discards work - the author's call.",
+    match=["git branch -D old"],
+    not_match=["git branch --show-current", "git branch -a"],
+)

@@ -30,7 +30,7 @@ Fix each at the cheapest layer that would have caught it, in this order of prefe
 
 1. a tool that fails - a lint rule, a check script, a `guard` check (the developer's edit: a session cannot change `.codex/hooks/`);
 2. one line in a path rule, `.ai-layer/rules/*.md`, that reaches the code, for a defect class a user can hit in ordinary work;
-3. a prohibition in `AGENTS.md` - only one that must be known before any file is touched (mind its 20 KB budget);
+3. a prohibition in `AGENTS.md` - only one that must be known before any file is touched (mind the budget its "Surgical Changes" section states);
 4. a new attack angle in `.ai-layer/hunt-angles.md`, or a step in a skill;
 5. for a habit with no file to change, one line in `AGENTS.md` Working Principles - or nothing, said plainly: this layer keeps no private notes between sessions.
 
