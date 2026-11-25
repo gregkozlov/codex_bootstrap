@@ -1,0 +1,41 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch|collaborationspawn_agent|collaborationfollowup_task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/guard.mjs\" --harness codex",
+            "timeout": 10,
+            "statusMessage": "Checking the call against the repo's prohibitions"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/guard.mjs\" --harness codex",
+            "timeout": 10,
+            "statusMessage": "Forgetting the path rules a lost context was shown"
+          }
+        ]
+      },
+      {
+        "matcher": "startup|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/upkeep-nudge.mjs\"",
+            "timeout": 10,
+            "statusMessage": "Checking when the AI-layer upkeep last ran"
+          }
+        ]
+      }
+    ]
+  }
+}
