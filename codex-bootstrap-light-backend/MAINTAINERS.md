@@ -4,7 +4,7 @@ For whoever changes this bootstrap. An adopter needs only `README.md`; the model
 
 ## What it is built from
 
-- It is a port of the Claude Code layer `claude-bootstrap-light-backend` in [claude_bootstrap](https://github.com/gregkozlov/claude_bootstrap), built from that repository's commit `a9126bd`, **over the Codex light frontend layer**: what the two Claude light layers share byte for byte, the two Codex layers share too; what the Claude backend layer changes against its frontend twin is ported by meaning onto the Codex light frontend file. Always from a commit, never from a working tree or from the project the bootstraps came from.
+- It is a port of the Claude Code layer `claude-bootstrap-light-backend` in [claude_bootstrap](https://github.com/gregkozlov/claude_bootstrap), built from that repository's commit `06c683b`, **over the Codex light frontend layer**: what the two Claude light layers share byte for byte, the two Codex layers share too; what the Claude backend layer changes against its frontend twin is ported by meaning onto the Codex light frontend file. Always from a commit, never from a working tree or from the project the bootstraps came from.
 - **A fix the Claude layer also needs is made there first** and arrives here as a copy; a Codex-only fix stays here and is listed in this file.
 - The layer spans the same four places as the light frontend one: the root `AGENTS.md`, `.codex/`, `.agents/skills/` and `.ai-layer/`.
 
@@ -107,8 +107,8 @@ Engine `codex-cli 0.171.0-alpha.13.2` (the desktop app's own), on Windows. What 
 **Offline (2026-11-25):**
 
 - `node --check` on every script of the template and of each scratch install.
-- The suites, in installs made as `INSTALL.md` says into fresh scratch repositories with a server project (a committed migration with no remote, an untracked `.env` and `config/local.settings.json`, a `Makefile` with `deploy`), filled from the maintainers' backend answers: `guard-test.mjs` 93 passed, `guard-shell-test.mjs` 417 passed, `backend-guard-test.mjs` 792 passed, `upkeep-nudge-test.mjs` 12 passed; unfilled, `backend-guard-test.mjs` 792 and `guard-test.mjs` 93 passed, and `guard-shell-test.mjs` fails the 13 cases built from the unfilled source folder, as its README says. With the project's own secret file at the root, one `backend-guard-test.mjs` case fails as described under "Known gaps" (791 passed). `layer-refs.mjs`: 0 unresolved. In personal mode `git check-ignore` names the layer's paths and `git status` shows none of them.
-- Each guard class through **both** registered `PreToolUse` lines, a Codex-shaped payload on stdin, started in a subfolder, in PowerShell 7, Windows PowerShell and `bash` - 63 cases, all as expected in all three shells; for every refusal the hook expected to refuse is the one that did:
+- The suites, in installs made as `INSTALL.md` says into fresh scratch repositories with a server project (a committed migration with no remote, an untracked `.env` and `config/local.settings.json`, a `Makefile` with `deploy`), filled from the maintainers' backend answers, in personal and in team mode: `guard-test.mjs` 93 passed, `guard-shell-test.mjs` 417 passed, `backend-guard-test.mjs` 1089 passed (parts 1-4: 741, 169, 11, 168), `upkeep-nudge-test.mjs` 12 passed; unfilled, `backend-guard-test.mjs` 1089 and `guard-test.mjs` 93 passed, and `guard-shell-test.mjs` fails the 13 cases built from the unfilled source folder, as its README says. `layer-refs.mjs`: 0 unresolved. In personal mode `git check-ignore` names the layer's paths and `git status` shows none of them.
+- Each guard class through **both** registered `PreToolUse` lines, a Codex-shaped payload on stdin, started in a subfolder, in PowerShell 7, Windows PowerShell and `bash` - 75 cases, all as expected in all three shells; for every refusal the hook expected to refuse is the one that did:
 
 | Class | Refused | Passed |
 | --- | --- | --- |
@@ -123,31 +123,58 @@ Engine `codex-cli 0.171.0-alpha.13.2` (the desktop app's own), on Windows. What 
 | former questions | `docker compose down -v`, `alembic downgrade base`, a `DROP` handed to `psql`, `alembic stamp`, `kubectl get secret -o yaml`, `aws secretsmanager get-secret-value`, `ssh` to a host, `psql -h <host>` | `alembic downgrade -1` |
 | interactive client | a bare `psql`, `bin/rails c`, `python manage.py shell`, `docker compose exec app bash`, `docker exec -it db psql` | `psql -c "select 1"` |
 | misfilled list | with `FROZEN_RAW` broken, `git status` and a source patch, each naming the list | - |
+| liveness and PowerShell forms | `Get-Content .env.layer-probe`, `Get-Content -Path ../../.e*`, `Remove-Item -Path:` of `.env` and of the migration, `Get-Item .env \| foreach { Get-Content $_ }`, `<# n #> Get-Content .env`, `[System.IO.StreamReader]::new('.env')`, `Invoke-Command -ComputerName prod01`, `Invoke-Sqlcmd ... -Query "DROP DATABASE app"` | `Get-Content -Path ../main.py`, `Invoke-Command $sb`, `docker compose exec api python --version` |
 
 - The maintainers' anonymity scan over this repository: clean, its review lines (a database client's own flag) read and recorded. No dash characters. `cmp` over the lists above.
 
-**Live:** not run yet - see "The live run".
+**Live:** see "The live run".
 
 ## The live run
 
-Pending: a scratch install with a logging hook registered beside the layer's own, a prompt that has Codex try each guard class of both hooks, a spawn of `hunt` and `drift` each trying one patch, each skill by name and an interactive `psql`; then a desktop pass after the hooks are trusted in Settings > Hooks. A refusal that did not happen there is a blocker. Its results replace this section.
+One headless run of the engine (2026-11-25, `codex-cli 0.171.0-alpha.13.2`) in a scratch install made as `INSTALL.md` says, on the layer of `06c683b` - personal mode, the lists filled, a server project (a committed migration with no remote, an untracked `.env` and `config/local.settings.json`), one path rule, a logging-only hook beside the layer's own on every event, the workspace-write sandbox, approvals off, hook trust bypassed for that invocation. 47 steps; the log holds 49 `PreToolUse` calls, two `SubagentStart` / `SubagentStop` pairs and one `SessionStart` (`startup`).
+
+**Every refusal the prompt expected happened, each by the hook expected**, the reason reaching the model verbatim:
+
+| Hook | Refused live | Passed live |
+| --- | --- | --- |
+| `guard.mjs` | `cd .`; a patch creating a generated client; an em dash in a patch; `Set-Content` into the tree; `git commit`; `pwsh -NoLogo` | a source patch; `git grep`; `Get-Content .env.example` |
+| `backend-guard.mjs`, secrets | `Get-Content .env.layer-probe` (the liveness probe); `Get-Content` of `.env` and of the project list's file; `Get-Content .en*`; `Get-Item .env \| Get-Content`; `Get-ChildItem -Recurse \| Select-String`; `curl.exe -F "f=@.env"`; `Compress-Archive -Path .`; a patch writing `.env`; a `Delete File` of it; `Remove-Item .env`; `Get-Content ../.env` with the working-directory parameter set to `app` | - |
+| `backend-guard.mjs`, frozen | a patch editing and one deleting the committed migration; `Remove-Item` of it | a new migration file |
+| `backend-guard.mjs`, outward | `make deploy` (the project list); `kubectl --context <not local> apply`; `docker push` | - |
+| `backend-guard.mjs`, former questions | `docker compose down -v`; `alembic downgrade base`; `alembic stamp head`; `kubectl get secret -o yaml`; `ssh` to a host; `psql -h <host> -c ...` | `alembic downgrade -1` (then failed: no `alembic` installed) |
+| `backend-guard.mjs`, Codex only | a bare `psql`; `python manage.py shell`; `docker compose exec app bash` | - |
+
+**Not exercised in that run:** the `Move to` patch away from the migration - the model sent a patch with an empty hunk, which the engine rejected before any hook ran (the log has no such call); the class is proved through the hook line, offline. `hunt` and `drift` were spawned with `fork_turns: "none"` and `reasoning_effort: "high"` and declined every tool call on their read-only instructions, as in the light frontend layer's run, so their fence is proved offline only; `hunt` knew no codeword of the parent's prompt.
+
+**Measured in that run:** the session-start reminder reached the model, which opened its reply with it; `debug`, `handoff` and `maintain-ai-layer` were in the skill list, `retro` was not; `maintain-ai-layer` with the word `init` read `references/init.md` and quoted its always-asked question. `curl.exe -m 3 http://127.0.0.1:9/` in the sandbox came back exit 1 with no output - whether the sandbox stopped it or nothing listened is not settled (the wrapper shell maps a native failure to 1).
+
+**One pass in the desktop app (2026-11-25)**, in the same scratch install, the hooks reviewed in Settings > Hooks ("Trust all"), a new thread, approvals on (`permission_mode: default`):
+
+- Settings > Hooks listed 14 hooks for the project - the layer's four and the logging hook's ten - each under its `statusMessage`, not its file name: `backend-guard.mjs` is the one reading "Checking the call for secrets, frozen migrations and outward commands". A developer looking for the file name will not find it there; `INSTALL.md` names the hooks by file.
+- **Refused on screen, the reason visible to the person**: `cd .` by `guard.mjs`; `Get-Content .env`, `alembic downgrade base`, a patch adding a line to the committed migration and a bare `psql` by `backend-guard.mjs`. No approval prompt opened (no `PermissionRequest` event); reading the migration before the patch passed, as a read should.
+
+**Still unmeasured:** a request to a local port that has a listener, under the default sandbox; how a long-running local server is started and stopped across calls; `PreCompact` / `PostCompact`; anything on macOS or Linux.
+
+## What the review changed in `backend-guard.mjs`
+
+The layer was first built on `a9126bd`. A review of both hooks against Codex-shaped payloads (2026-11-25) found PowerShell forms that passed `backend-guard.mjs` in both tools' forms: a wildcard after `-Path`, a value joined to its parameter (`-Path:.env`), `foreach` / `%{` / `process{` blocks, a `<# #>` comment hiding the rest of a line, .NET and provider reads, gcloud credentials spelled with `$env:APPDATA`, comma lists in a remover, Codex-only interactive forms (`psql -f -`, `iex psql`, `docker attach`, an interpreter prompt in a container), PowerShell remoting, `Invoke-Sqlcmd`, `Send-MailMessage -Attachments`; and the suite's first part depending on the project's own files. With the owner's yes they were fixed in the Claude repository in one round - the plan attacked by a fresh agent first (which also found a time regression past the hook's 10 s timeout, now one git call per hook run), the working tree reviewed before the commit - and the file here is `06c683b`'s. On the committed suite's payloads no answer of the Claude Code form changed; five question texts did (the ssh family's label now names PuTTY).
+
+The same review found a Codex-only defect in both layers' `hooks.json`: `--show-toplevel` under a project folder with non-ASCII letters (fixed, "The switch in `backend-guard.mjs`" above).
 
 ## Known gaps
 
 The light frontend layer's "Known gaps" hold for `guard.mjs`. For `backend-guard.mjs`:
 
-- **What it cannot see**: a secret reached through a variable or a subexpression (`$p = '.env'; gc $p`, `Get-Content (Join-Path . '.env')`, `Get-Content (Resolve-Path .env)`); a chain of two pipes; a here-string assigned to a variable and used later; a delete inside a launcher's argument list (`Start-Process pwsh -ArgumentList '-c Remove-Item .env'`); a tool named with `.com`; a script file or task-runner target that runs a forbidden command; SQL in a file; a database host taken from the environment or a config file.
+- **What it cannot see**, as its README lists it: a secret reached through a variable or a subexpression (`$p = '.env'; gc $p`, `Get-Content (Join-Path . '.env')`); a FileInfo or .NET read handed its file over a pipe or a variable, or a type named through `using namespace`; a chain of two pipes; a here-string assigned to a variable and used later; a delete inside a launcher's argument list; a .NET delete of a migration; a tool named with `.com`; a wildcard in a folder part (`conf*\local.settings.json`); the Az, AWS and SecretManagement PowerShell modules; a PuTTY saved session; a script file or task-runner target that runs a forbidden command; SQL in a file; a database host taken from the environment or a config file.
 - A home-folder walk is expanded only for `~`, `$HOME`, `${HOME}`, `$env:USERPROFILE`, `$env:HOME`, `%USERPROFILE%` at the start of a path.
-- `docker run -it <image>` with no command is refused even when the image runs a server.
-- `rm` with a hundred paths takes about 6 s with the frozen list filled (one `git ls-files` per path); the hook's timeout is 10 s.
-- **The suite's first part runs from the project root** (shared with the Claude layer): in a project that holds a file of its own secret list at the root, `zip that leaves the env file out (allow)` - `zip -r /tmp/app.zip . -x .env` - is refused, correctly, and the suite reports one failure. `INSTALL.md` step 8 tells the installer so. The fix belongs in the Claude repository's suite (run the folder-walking cases in a temp folder), and then arrives here as a copy.
+- `docker run -it <image>` with no command is refused even when the image runs a server; a copy of a folder that holds an env file of its own is refused; any cmdlet's `-ComputerName` / `-Server` naming another machine counts as another host, reads included (`Get-ADUser -Server dc01`).
 - What is typed into a running command fires no hook: a client the hook does not know (`SESSION_CLIENTS`) left open is a database shell nothing checks.
 - The default sandbox has no network: a check command or a local request may be stopped there, and the layer's text hands it to the developer rather than asking for configuration.
 
 ## The numbers that must agree
 
 - **The spawn count per task**, "usually 1-2, at most 5": `template/AGENTS.md` "Development Workflow", `README.md` "What it costs", `maintain-ai-layer/references/deep.md` D5.
-- **The `AGENTS.md` budget**: 24 KiB. The layer's own text is about 20 KB (`grep -v "^\[fill\]"`: 20 595 bytes), the template 23 277 bytes; `AGENTS.md` "Surgical Changes", `drift.toml` "Gaps", `maintain-ai-layer/SKILL.md`, `INSTALL.md` step 4 and `README.md` "What it costs" state it.
+- **The `AGENTS.md` budget**: 24 KiB. The layer's own text is about 20 KB (`grep -v "^\[fill\]"`: 20 611 bytes), the template 23 293 bytes; `AGENTS.md` "Surgical Changes", `drift.toml` "Gaps", `maintain-ai-layer/SKILL.md`, `INSTALL.md` step 4 and `README.md` "What it costs" state it.
 - **The hunt angles** stay under the 6 KB `.ai-layer/hunt-angles.md` states (5 702 bytes).
 - **The unit count of `deep`** in `README.md` (18 `AGENTS.md` sections, the angles file, 2 agents, 4 skills, the hooks README; about 42 spawns with five rules) against `deep.md` D1 and the headings of `template/AGENTS.md`; `init`'s 5 survey agents against `init.md` I1.
 - **The upkeep pace**: 30 days, as in the light frontend layer.
