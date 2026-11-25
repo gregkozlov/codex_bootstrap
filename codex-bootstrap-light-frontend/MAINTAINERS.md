@@ -100,6 +100,7 @@ The owner's answers while the guard was taught Codex (2026-11-25):
 3. The built-in `explorer` is fenced to no project path, beside the layer's own agent names.
 4. Project-tuned text lives in `.ai-layer/` (the hunt angles, `settled.md`, the `layer-refs` prefixes), so daily work, `init` and upkeep need nothing beyond the default sandbox.
 5. The plan this layer was built by, as a whole.
+6. After the desktop pass showed that unreviewed hooks are skipped without a word: a session checks once, before its first edit, that the guard is live - it runs `cd .`, which the guard refuses - and tells the user at once when the command simply runs (`AGENTS.md`, "Shell and file edits"). It costs one call per session.
 
 Taken on the owner's behalf while porting, each open to an overrule:
 
@@ -112,7 +113,7 @@ Taken on the owner's behalf while porting, each open to an overrule:
 - The stash rule lists subcommands; a bare `git stash` is the guard's alone.
 - `guard` is registered on `SessionStart` for `startup`, `clear` and `compact`, not for `resume`: a resumed session still has its context, so its rule notes stay.
 - `layer-refs` checks `$name` as a skill only in the layer's own skills and hooks docs: in a project's docs it is a variable or a framework's own name.
-- The budget of `AGENTS.md` stays at 20 KB as planned, though the layer's own text grew to about 15.5 KB with the two new sections and the two rules the live run added - about 4.5 KB is left to the project, against about 8 KB in the Claude layer. If that proves tight, the larger layer's 24 KiB is the next step, still inside Codex's 32 KiB chain limit.
+- The budget of `AGENTS.md` stays at 20 KB as planned, though the layer's own text grew to about 16 KB with the two new sections and the three rules the live runs added - about 4 KB is left to the project, against about 8 KB in the Claude layer. If that proves tight, the larger layer's 24 KiB is the next step, still inside Codex's 32 KiB chain limit.
 - `init.md` was written for this layer alone rather than kept generic for a larger one.
 - A skill file under `.agents/skills/` is patched by upkeep when the sandbox lets the write through, and handed to the developer as an exact pair when it does not.
 
@@ -275,7 +276,7 @@ What that round left, on purpose: the lists of the next section.
 ## The numbers that must agree
 
 - **The spawn count per task**, "usually 1-2, at most 5" (`hunt` on the plan, `hunt` on the diff, a second `hunt` round, `drift`, an `explorer`). It is stated in `template/AGENTS.md` "Development Workflow", in `README.md` "What it costs" and checked by `maintain-ai-layer/references/deep.md` D5. Change all three together.
-- **The `AGENTS.md` budget**: 20 KB. The layer's own text is about 15.5 KB (the file without its `[fill]` lines), the template about 17 KB; `README.md` "What it costs" states the template's size and the budget.
+- **The `AGENTS.md` budget**: 20 KB. The layer's own text is about 16 KB (the file without its `[fill]` lines), the template about 17.3 KB; `README.md` "What it costs" states the template's size and the budget.
 - **The upkeep pace**: `upkeep-nudge.mjs` asks after 30 days, its suite pins 29 days as silent, and `deep` is the mode a bare `$maintain-ai-layer` runs once `AGENTS.md` has no `[fill]` line left.
 - **The unit count of `deep`** in `README.md` (14 `AGENTS.md` sections, the angles file, 2 agents, 4 skills, the hooks README) against `deep.md` D1 and the headings of `template/AGENTS.md`.
 
