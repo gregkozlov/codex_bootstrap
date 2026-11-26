@@ -22,7 +22,7 @@ Paths on the right are under `template/`. `cmp` proves each line; run it before 
 | `hooks/tests/guard-shell-test.mjs` | `.codex/hooks/tests/guard-shell-test.mjs` |
 | `skills/maintain-ai-layer/references/settled.md` | `.ai-layer/settled.md` |
 
-**Identical across the Codex layers** - this repository carries two, this one and `codex-bootstrap-light-backend`, and `cmp` confirms each line against the other: the four files above, `.codex/hooks/upkeep-nudge.mjs`, `.codex/hooks/tests/upkeep-nudge-test.mjs`, `.agents/skills/maintain-ai-layer/layer-refs.mjs`, `.agents/skills/handoff/SKILL.md`, `.agents/skills/retro/SKILL.md` with its `agents/openai.yaml`, `.codex/rules/git.rules`.
+**Identical across the Codex layers** - this repository carries two, this one and `codex-bootstrap-light-backend`, and `cmp` confirms each line against the other: the four files above, `.codex/hooks/upkeep-nudge.mjs`, `.codex/hooks/tests/upkeep-nudge-test.mjs`, `.agents/skills/maintain-ai-layer/layer-refs.mjs`, `.agents/skills/handoff/SKILL.md`, `.agents/skills/retro/SKILL.md` with its `agents/openai.yaml`, `.codex/rules/git.rules`, `.ai-layer/rules/.gitkeep`.
 
 **Forked** from the Claude layer (small scripts, under 10 KB each; a change to the Claude original is ported by hand, not copied):
 
